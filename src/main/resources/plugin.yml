@@ -1,0 +1,7 @@
+name: SumoFFA
+version: 1.1.0-SNAPSHOT
+author: Sorridi
+main: net.herospvp.sumo.Main
+load: POSTWORLD
+depend:
+  - BaseFFA

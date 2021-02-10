@@ -4,6 +4,7 @@ import net.herospvp.base.events.custom.CombatKillEvent;
 import net.herospvp.base.events.custom.MapChangeEvent;
 import net.herospvp.base.events.custom.SpawnEvent;
 import net.herospvp.base.utils.StringFormat;
+import net.herospvp.heroscore.objects.HPlayer;
 import net.herospvp.sumo.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -176,6 +177,9 @@ public class MoreEvents implements Listener {
     @EventHandler
     public void on(CombatKillEvent event) {
         Player victim = event.getVictim(), killer = event.getKiller();
+
+        HPlayer hKiller = instance.getBase().getHerosCore().getPlayersHandler().getPlayer(killer.getUniqueId());
+        hKiller.setCoins(hKiller.getCoins() + 2);
 
         for (ItemStack itemStack : killer.getInventory()) {
 

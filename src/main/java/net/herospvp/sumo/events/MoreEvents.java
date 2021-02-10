@@ -1,18 +1,28 @@
 package net.herospvp.sumo.events;
 
+import net.herospvp.base.events.custom.CombatKillEvent;
+import net.herospvp.base.events.custom.MapChangeEvent;
+import net.herospvp.base.events.custom.SpawnEvent;
 import net.herospvp.base.utils.StringFormat;
 import net.herospvp.sumo.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +30,18 @@ import java.util.Map;
 public class MoreEvents implements Listener {
 
     private final Main instance;
+    private final ItemStack[] hotBar;
     private final StringFormat stringFormat;
     private final Map<String, String> player1v1;
     private final Map<Player, Integer> playerAndHits;
+    private final Map<Block, Long> blockTimings;
 
     public MoreEvents(Main instance) {
         this.instance = instance;
+        this.hotBar = instance.getHotBar();
         this.player1v1 = new HashMap<>();
         this.playerAndHits = new HashMap<>();
+        this.blockTimings = new HashMap<>();
         this.stringFormat = instance.getBase().getStringFormat();
         instance.getServer().getPluginManager().registerEvents(this, instance);
     }
@@ -59,6 +73,8 @@ public class MoreEvents implements Listener {
 
         String damagerName = damager.getName(), damagedName = damaged.getName();
 
+        damaged.setHealth(20D);
+
         if (damager.getItemInHand() == null) {
             return;
         }
@@ -66,8 +82,6 @@ public class MoreEvents implements Listener {
         if (damager.getItemInHand().getItemMeta() == null) {
             return;
         }
-
-        damaged.setHealth(20D);
 
         if (player1v1.get(damagerName) == null) {
             player1v1.replace(damagerName, damagedName);
@@ -79,41 +93,33 @@ public class MoreEvents implements Listener {
         if (player1v1.get(damagerName).equals(damagedName)) {
 
             int value = playerAndHits.get(damager);
-
-            if (value >= 5) {
-
-                playerAndHits.replace(damager, value + 1);
-
-                switch (itemMeta.getDisplayName()) {
-                    case "§7Livello §e1": {
-                        if (value != 10) {
-                            return;
-                        }
-                        itemMeta.setDisplayName(stringFormat.translate("&7Livello &e2"));
-                        itemStack.setItemMeta(itemMeta);
-
-                        itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
-                        damager.setItemInHand(itemStack);
-
-                        damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 2!");
-                        break;
-                    }
-                    case "§7Livello §e0": {
-                        itemMeta.setDisplayName(stringFormat.translate("&7Livello &e1"));
-                        itemStack.setItemMeta(itemMeta);
-
-                        itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
-                        damager.setItemInHand(itemStack);
-
-                        damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 1!");
-                        break;
-                    }
-                }
-                return;
-            }
             playerAndHits.replace(damager, value + 1);
+
+            if (itemMeta.getDisplayName().startsWith("§7Livello §e1")) {
+                if (value != 5) {
+                    return;
+                }
+                itemMeta.setDisplayName(stringFormat.translate("&7Livello &e1 &c(" +  damagedName + ")"));
+                itemStack.setItemMeta(itemMeta);
+
+                itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
+                damager.setItemInHand(itemStack);
+
+                damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 1!");
+            } else if (itemMeta.getDisplayName().startsWith("§7Livello §e1")) {
+                if (value != 10) {
+                    return;
+                }
+                itemMeta.setDisplayName(stringFormat.translate("&7Livello &e2 &c(" +  damagedName + ")"));
+                itemStack.setItemMeta(itemMeta);
+
+                itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
+                damager.setItemInHand(itemStack);
+
+                damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 2!");
+            }
         } else {
-            itemMeta.setDisplayName(stringFormat.translate("&7Livello &e0"));
+            itemMeta.setDisplayName(stringFormat.translate("&7Livello &e0 &c(" +  damagedName + ")"));
 
             itemStack.setItemMeta(itemMeta);
             itemStack.removeEnchantment(Enchantment.KNOCKBACK);
@@ -122,12 +128,72 @@ public class MoreEvents implements Listener {
             player1v1.replace(damagerName, damagedName);
             playerAndHits.replace(damager, 0);
             event.setCancelled(true);
+            damaged.damage(0D);
         }
     }
 
     @EventHandler
     public void on(PlayerDeathEvent event) {
         playerAndHits.replace(event.getEntity(), 0);
+    }
+
+    @EventHandler
+    public void on(BlockPlaceEvent event) {
+        blockTimings.put(event.getBlockPlaced(), System.currentTimeMillis());
+    }
+
+    @EventHandler
+    public void on(MapChangeEvent event) {
+        for (Map.Entry<Block, Long> entry : blockTimings.entrySet()) {
+            entry.getKey().breakNaturally();
+        }
+        blockTimings.clear();
+    }
+
+    @EventHandler
+    public void on(SpawnEvent event) {
+        Player player = event.getPlayer();
+
+        PlayerInventory playerInventory = player.getInventory();
+        playerInventory.clear();
+        playerInventory.setItem(0, hotBar[0]);
+        playerInventory.setItem(1, hotBar[1]);
+
+        Bukkit.getScheduler().runTaskLater(instance, () -> {
+            if (player.getActivePotionEffects().size() == 0) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 172800000, 0));
+            } else {
+                for (PotionEffect effect : player.getActivePotionEffects()) {
+                    if (effect.getType().equals(PotionEffectType.NIGHT_VISION)) {
+                        continue;
+                    }
+                    player.removePotionEffect(effect.getType());
+                }
+            }
+        }, 5L);
+    }
+
+    @EventHandler
+    public void on(CombatKillEvent event) {
+        Player victim = event.getVictim(), killer = event.getKiller();
+
+        for (ItemStack itemStack : killer.getInventory()) {
+
+            if (itemStack == null || itemStack.getItemMeta() == null || itemStack.getType() != Material.STICK) continue;
+
+            if (!itemStack.getItemMeta().getDisplayName().contains(stringFormat.translate("&7Livello &e0"))) {
+
+                ItemMeta meta = itemStack.getItemMeta();
+                meta.setDisplayName(stringFormat.translate("&7Livello &e0"));
+                itemStack.setItemMeta(meta);
+
+                itemStack.removeEnchantment(Enchantment.KNOCKBACK);
+
+                player1v1.replace(killer.getName(), victim.getName());
+                playerAndHits.replace(killer, 0);
+            }
+        }
+
     }
 
 }

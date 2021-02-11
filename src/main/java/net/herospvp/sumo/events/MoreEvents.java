@@ -1,5 +1,6 @@
 package net.herospvp.sumo.events;
 
+import lombok.Getter;
 import net.herospvp.base.events.custom.CombatKillEvent;
 import net.herospvp.base.events.custom.MapChangeEvent;
 import net.herospvp.base.events.custom.SpawnEvent;
@@ -34,6 +35,7 @@ public class MoreEvents implements Listener {
     private final StringFormat stringFormat;
     private final Map<String, String> player1v1;
     private final Map<Player, Integer> playerAndHits;
+    @Getter
     private final Map<Block, Long> blockTimings;
 
     public MoreEvents(Main instance) {

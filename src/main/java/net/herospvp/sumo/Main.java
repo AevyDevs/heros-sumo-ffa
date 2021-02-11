@@ -2,16 +2,19 @@ package net.herospvp.sumo;
 
 import lombok.Getter;
 import net.herospvp.base.Base;
+import net.herospvp.base.events.custom.MapChangeEvent;
 import net.herospvp.base.utils.StringFormat;
 import net.herospvp.sumo.events.MoreEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
+import java.util.Map;
 
 @Getter
 public class Main extends JavaPlugin {
@@ -19,6 +22,7 @@ public class Main extends JavaPlugin {
     private Base base;
     private StringFormat stringFormat;
     private ItemStack[] hotBar;
+    private MoreEvents moreEvents;
 
     @Override
     public void onEnable() {
@@ -26,7 +30,7 @@ public class Main extends JavaPlugin {
         base = getPlugin(Base.class);
         stringFormat = base.getStringFormat();
 
-        new MoreEvents(this);
+        moreEvents = new MoreEvents(this);
 
         hotBar = new ItemStack[] { new ItemStack(Material.STICK), new ItemStack(Material.STAINED_CLAY, 8) };
 
@@ -57,7 +61,10 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        for (Map.Entry<Block, Long> entry : moreEvents.getBlockTimings().entrySet()) {
+            entry.getKey().breakNaturally();
+        }
+        moreEvents.getBlockTimings().clear();
     }
 
 }

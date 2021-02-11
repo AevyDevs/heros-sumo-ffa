@@ -28,9 +28,7 @@ public class Main extends JavaPlugin {
 
         new MoreEvents(this);
 
-        hotBar = new ItemStack[2];
-        hotBar[0] = new ItemStack(Material.STICK);
-        hotBar[1] = new ItemStack(Material.STAINED_CLAY, 8);
+        hotBar = new ItemStack[] { new ItemStack(Material.STICK), new ItemStack(Material.STAINED_CLAY, 8) };
 
         ItemMeta itemMeta = hotBar[0].getItemMeta();
         itemMeta.setLore(Arrays.asList(" ", stringFormat.translate("&e* &75 hit(*) &8» &elivello 1"),

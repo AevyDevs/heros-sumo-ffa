@@ -31,7 +31,6 @@ import java.util.Map;
 public class MoreEvents implements Listener {
 
     private final Main instance;
-    private final ItemStack[] hotBar;
     private final StringFormat stringFormat;
     private final Map<String, String> player1v1;
     private final Map<Player, Integer> playerAndHits;
@@ -39,7 +38,6 @@ public class MoreEvents implements Listener {
 
     public MoreEvents(Main instance) {
         this.instance = instance;
-        this.hotBar = instance.getHotBar();
         this.player1v1 = new HashMap<>();
         this.playerAndHits = new HashMap<>();
         this.blockTimings = new HashMap<>();
@@ -96,7 +94,7 @@ public class MoreEvents implements Listener {
             int value = playerAndHits.get(damager);
             playerAndHits.replace(damager, value + 1);
 
-            if (itemMeta.getDisplayName().startsWith("§7Livello §e1")) {
+            if (itemMeta.getDisplayName().startsWith("§7Livello §e0")) {
                 if (value != 5) {
                     return;
                 }
@@ -157,8 +155,8 @@ public class MoreEvents implements Listener {
 
         PlayerInventory playerInventory = player.getInventory();
         playerInventory.clear();
-        playerInventory.setItem(0, hotBar[0]);
-        playerInventory.setItem(1, hotBar[1]);
+        playerInventory.setItem(0, instance.getHotBar()[0]);
+        playerInventory.setItem(1, instance.getHotBar()[1]);
 
         Bukkit.getScheduler().runTaskLater(instance, () -> {
             if (player.getActivePotionEffects().size() == 0) {
@@ -181,7 +179,9 @@ public class MoreEvents implements Listener {
         HPlayer hKiller = instance.getBase().getHerosCore().getPlayersHandler().getPlayer(killer.getUniqueId());
         hKiller.setCoins(hKiller.getCoins() + 2);
 
-        for (ItemStack itemStack : killer.getInventory()) {
+        PlayerInventory playerInventory = killer.getInventory();
+
+        for (ItemStack itemStack : playerInventory) {
 
             if (itemStack == null || itemStack.getItemMeta() == null || itemStack.getType() != Material.STICK) continue;
 
@@ -197,6 +197,7 @@ public class MoreEvents implements Listener {
                 playerAndHits.replace(killer, 0);
             }
         }
+        playerInventory.addItem(instance.getHotBar()[1]);
 
     }
 

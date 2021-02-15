@@ -8,6 +8,7 @@ import net.herospvp.sumo.events.MoreEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,6 +34,8 @@ public class Main extends JavaPlugin {
         moreEvents = new MoreEvents(this);
 
         hotBar = new ItemStack[] { new ItemStack(Material.STICK), new ItemStack(Material.STAINED_CLAY, 8) };
+
+        hotBar[0].addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
 
         ItemMeta itemMeta = hotBar[0].getItemMeta();
         itemMeta.setLore(Arrays.asList(" ", stringFormat.translate("&e* &75 hit(*) &8» &elivello 1"),

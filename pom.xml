@@ -6,7 +6,7 @@
 
     <groupId>net.herospvp.sumo</groupId>
     <artifactId>heros-sumo-ffa</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>SumoFFA</name>

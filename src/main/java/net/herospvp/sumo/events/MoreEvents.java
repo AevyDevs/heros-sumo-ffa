@@ -76,58 +76,61 @@ public class MoreEvents implements Listener {
 
         damaged.setHealth(20D);
 
-        if (damager.getItemInHand() == null) {
+        if (damager.getItemInHand() == null || damager.getItemInHand().getItemMeta() == null ||
+                !damager.getItemInHand().getItemMeta().hasDisplayName()) {
             return;
-        }
-
-        if (damager.getItemInHand().getItemMeta() == null) {
-            return;
-        }
-
-        if (player1v1.get(damagerName) == null) {
-            player1v1.replace(damagerName, damagedName);
         }
 
         ItemStack itemStack = damager.getItemInHand();
         ItemMeta itemMeta = itemStack.getItemMeta();
+
+        if (player1v1.get(damagerName) == null) {
+            player1v1.replace(damagerName, damagedName);
+        }
 
         if (player1v1.get(damagerName).equals(damagedName)) {
 
             int value = playerAndHits.get(damager);
             playerAndHits.replace(damager, value + 1);
 
-            if (itemMeta.getDisplayName().startsWith("§7Livello §e0")) {
+            if (itemMeta.getDisplayName().startsWith("§7Livello §e1")) {
                 if (value != 5) {
                     return;
                 }
-                itemMeta.setDisplayName(stringFormat.translate("&7Livello &e1 &c(" +  damagedName + ")"));
-                itemStack.setItemMeta(itemMeta);
-
-                itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
-                damager.setItemInHand(itemStack);
-
-                damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 1!");
-            } else if (itemMeta.getDisplayName().startsWith("§7Livello §e1")) {
-                if (value != 10) {
-                    return;
-                }
-                itemMeta.setDisplayName(stringFormat.translate("&7Livello &e2 &c(" +  damagedName + ")"));
+                itemMeta.setDisplayName(stringFormat.translate("&7Livello &e3 &c(" +  damagedName + ")"));
                 itemStack.setItemMeta(itemMeta);
 
                 itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
                 damager.setItemInHand(itemStack);
 
-                damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 2!");
+                damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 3!");
+            } else if (itemMeta.getDisplayName().startsWith("§7Livello §e2")) {
+                if (value != 10) {
+                    return;
+                }
+                itemMeta.setDisplayName(stringFormat.translate("&7Livello &e3 &c(" +  damagedName + ")"));
+                itemStack.setItemMeta(itemMeta);
+
+                itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 3);
+                damager.setItemInHand(itemStack);
+
+                damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 3!");
+            } else {
+                itemMeta.setDisplayName(stringFormat.translate("&7Livello &e1 &c(" +  damagedName + ")"));
+                itemStack.setItemMeta(itemMeta);
             }
         } else {
-            itemMeta.setDisplayName(stringFormat.translate("&7Livello &e0 &c(" +  damagedName + ")"));
+            itemMeta.setDisplayName(stringFormat.translate("&7Livello &e1 &c(" +  damagedName + ")"));
 
             itemStack.setItemMeta(itemMeta);
             itemStack.removeEnchantment(Enchantment.KNOCKBACK);
 
+            itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
             damager.setItemInHand(itemStack);
+
             player1v1.replace(damagerName, damagedName);
             playerAndHits.replace(damager, 0);
+
             event.setCancelled(true);
             damaged.damage(0D);
         }
@@ -187,13 +190,14 @@ public class MoreEvents implements Listener {
 
             if (itemStack == null || itemStack.getItemMeta() == null || itemStack.getType() != Material.STICK) continue;
 
-            if (!itemStack.getItemMeta().getDisplayName().contains(stringFormat.translate("&7Livello &e0"))) {
+            if (!itemStack.getItemMeta().getDisplayName().contains(stringFormat.translate("&7Livello &e1"))) {
 
                 ItemMeta meta = itemStack.getItemMeta();
-                meta.setDisplayName(stringFormat.translate("&7Livello &e0"));
+                meta.setDisplayName(stringFormat.translate("&7Livello &e1"));
                 itemStack.setItemMeta(meta);
 
                 itemStack.removeEnchantment(Enchantment.KNOCKBACK);
+                itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
 
                 player1v1.replace(killer.getName(), victim.getName());
                 playerAndHits.replace(killer, 0);

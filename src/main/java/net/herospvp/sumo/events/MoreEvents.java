@@ -97,13 +97,13 @@ public class MoreEvents implements Listener {
                 if (value != 5) {
                     return;
                 }
-                itemMeta.setDisplayName(stringFormat.translate("&7Livello &e3 &c(" +  damagedName + ")"));
+                itemMeta.setDisplayName(stringFormat.translate("&7Livello &e2 &c(" +  damagedName + ")"));
                 itemStack.setItemMeta(itemMeta);
 
                 itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
                 damager.setItemInHand(itemStack);
 
-                damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 3!");
+                damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 2!");
             } else if (itemMeta.getDisplayName().startsWith("§7Livello §e2")) {
                 if (value != 10) {
                     return;
@@ -115,9 +115,6 @@ public class MoreEvents implements Listener {
                 damager.setItemInHand(itemStack);
 
                 damager.sendMessage(ChatColor.GREEN + "Lo stick e' aumentato al livello 3!");
-            } else {
-                itemMeta.setDisplayName(stringFormat.translate("&7Livello &e1 &c(" +  damagedName + ")"));
-                itemStack.setItemMeta(itemMeta);
             }
         } else {
             itemMeta.setDisplayName(stringFormat.translate("&7Livello &e1 &c(" +  damagedName + ")"));

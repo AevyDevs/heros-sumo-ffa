@@ -38,13 +38,13 @@ public class Main extends JavaPlugin {
         hotBar[0].addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
 
         ItemMeta itemMeta = hotBar[0].getItemMeta();
-        itemMeta.setLore(Arrays.asList(" ", stringFormat.translate("&e* &75 hit(*) &8» &elivello 1"),
-                stringFormat.translate("&e* &710 hit(*) &8» &elivello 2"), " ",
+        itemMeta.setLore(Arrays.asList(" ", stringFormat.translate("&e* &75 hit(*) &8» &elivello 2"),
+                stringFormat.translate("&e* &710 hit(*) &8» &elivello 3"), " ",
                 stringFormat.translate("&7(*) » consecutive allo stesso avversario"), " ",
                 stringFormat.translate("&7&7NOTA: colpire altri avversari comporta la"),
                 stringFormat.translate("&7&7perdita del livello"), " "));
 
-        itemMeta.setDisplayName(stringFormat.translate("&7Livello &e0"));
+        itemMeta.setDisplayName(stringFormat.translate("&7Livello &e1"));
         hotBar[0].setItemMeta(itemMeta);
 
         base.getWorldConfiguration().setPvpDisabledOver(58);

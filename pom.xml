@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.herospvp.sumo</groupId>
+    <groupId>net.herospvp</groupId>
     <artifactId>heros-sumo-ffa</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>SumoFFA</name>
+    <name>heros-sumo-ffa</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -61,6 +61,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -80,6 +84,18 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.16</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.HerosDevs</groupId>
+            <artifactId>heros-core</artifactId>
+            <version>1.1.21-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.herospvp</groupId>
+            <artifactId>heros-base-ffa</artifactId>
+            <version>2.3.4-SNAPSHOT</version>
+            <systemPath>${basedir}/libs/heros-base-ffa.jar</systemPath>
+            <scope>system</scope>
         </dependency>
     </dependencies>
 

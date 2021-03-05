@@ -1,6 +1,6 @@
-name: SumoFFA
+name: heros-sumo-ffa
 version: ${project.version}
 author: Sorridi
 main: net.herospvp.sumo.Main
 depend:
-  - BaseFFA
+  - heros-base-ffa
